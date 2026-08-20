@@ -5,6 +5,8 @@ import { HealthCondition, HealthImplication } from './health';
 import { IngredientGroup, Ingredient, IngredientSet } from './ingredient';
 import { FoodAllocationGroup, BaseDailyFeedRate, BreedingStatusFeedFactor, TransitionPeriod } from './menu-rule';
 import { Message, UserProfile, SystemConfig, SystemEvent } from './system';
+import { generateMenu as generateMenuFunction } from '../functions/generateMenu/resource';
+import generateMenu from './generate-menu';
 
 /*== STEP 1 ===============================================================
 The section below creates a Todo database table with a "content" field. Try
@@ -32,13 +34,15 @@ const schema = a
         SystemConfig,
         SystemEvent,
         GeneratedMenu,
+
+        generateMenu,
         Todo: a
             .model({
                 content: a.string(),
             })
             .authorization((allow) => [allow.owner(), allow.group('Admin')]),
     })
-    .authorization((allow) => [allow.owner(), allow.group('Admin')]);
+    .authorization((allow) => [allow.owner(), allow.group('Admin'), allow.resource(generateMenuFunction)]);
 
 export type Schema = ClientSchema<typeof schema>;
 
