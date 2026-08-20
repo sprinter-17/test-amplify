@@ -1,4 +1,10 @@
-import { type ClientSchema, a, defineData } from "@aws-amplify/backend";
+import { type ClientSchema, a, defineData } from '@aws-amplify/backend';
+import { Dog, DogBreed, DogBreedGroup, Lifestage } from './dog';
+import { GeneratedMenu } from './generated';
+import { HealthCondition, HealthImplication } from './health';
+import { IngredientGroup, Ingredient, IngredientSet } from './ingredient';
+import { FoodAllocationGroup, BaseDailyFeedRate, BreedingStatusFeedFactor, TransitionPeriod } from './menu-rule';
+import { Message, UserProfile, SystemConfig, SystemEvent } from './system';
 
 /*== STEP 1 ===============================================================
 The section below creates a Todo database table with a "content" field. Try
@@ -6,25 +12,45 @@ adding a new "isDone" field as a boolean. The authorization rule below
 specifies that any user authenticated via an API key can "create", "read",
 "update", and "delete" any "Todo" records.
 =========================================================================*/
-const schema = a.schema({
-  Todo: a
-    .model({
-      content: a.string(),
+const schema = a
+    .schema({
+        Dog,
+        DogBreed,
+        DogBreedGroup,
+        HealthCondition,
+        HealthImplication,
+        IngredientGroup,
+        Ingredient,
+        IngredientSet,
+        FoodAllocationGroup,
+        BaseDailyFeedRate,
+        BreedingStatusFeedFactor,
+        Lifestage,
+        TransitionPeriod,
+        Message,
+        UserProfile,
+        SystemConfig,
+        SystemEvent,
+        GeneratedMenu,
+        Todo: a
+            .model({
+                content: a.string(),
+            })
+            .authorization((allow) => [allow.owner(), allow.group('Admin')]),
     })
-    .authorization((allow) => [allow.publicApiKey()]),
-});
+    .authorization((allow) => [allow.owner(), allow.group('Admin')]);
 
 export type Schema = ClientSchema<typeof schema>;
 
 export const data = defineData({
-  schema,
-  authorizationModes: {
-    defaultAuthorizationMode: "apiKey",
-    // API Key is used for a.allow.public() rules
-    apiKeyAuthorizationMode: {
-      expiresInDays: 30,
+    schema,
+    authorizationModes: {
+        defaultAuthorizationMode: 'apiKey',
+        // API Key is used for a.allow.public() rules
+        apiKeyAuthorizationMode: {
+            expiresInDays: 30,
+        },
     },
-  },
 });
 
 /*== STEP 2 ===============================================================
